@@ -1,10 +1,4 @@
-
-const CAPACIDADE_A = 8;
-const CAPACIDADE_B = 5;
-const CAPACIDADE_C = 3;
-
-const estadoInicial = [8, 0, 0];
-const objetivo = [4, 4, 0];
+const { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } = require('./config.js');
 
 // Função para transferir água de um recipiente para outro
 function transferir(origem, destino, capacidadeDestino) {
