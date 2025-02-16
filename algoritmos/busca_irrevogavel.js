@@ -1,19 +1,19 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
 
-// Função para transferir água de um recipiente para outro
+// Função de transferência
 function transferir(origem, destino, capacidadeDestino) {
     const transferirQuantidade = Math.min(origem, capacidadeDestino - destino);
     return [origem - transferirQuantidade, destino + transferirQuantidade];
 }
 
-// Busca irrevogável usando DFS
+// Busca Irrevogável usando DFS
 export function buscaIrrevogavel() {
     // Conjunto para rastrear estados visitados
     const visitados = new Set();
-    const tree = [];
+    const arvore = [];
 
     // Função recursiva para a busca
-    function dfs(estado, caminho) {
+    function dfs(estado, caminho, pai) {
         const estadoString = estado.join(',');
 
         // Verificar se o estado já foi visitado
@@ -24,14 +24,12 @@ export function buscaIrrevogavel() {
         // Marcar estado como visitado
         visitados.add(estadoString);
 
-        // Exibir caminho e estado atual
-        console.log(`Caminho: ${caminho.join(' -> ')} | Estado: [${estado}]`);
-        tree.push({ caminho, estado });
+        // Adicionar o nó à árvore
+        arvore.push({ estado, pai, transicao: caminho[caminho.length - 1] });
 
         // Verificar se o objetivo foi alcançado
         if (estado[0] === objetivo[0] && estado[1] === objetivo[1] && estado[2] === objetivo[2]) {
-            console.log("Objetivo alcançado!");
-            return true;
+            return true; // Objetivo alcançado
         }
 
         // Possíveis transferências
@@ -65,24 +63,18 @@ export function buscaIrrevogavel() {
         // Explorar todas as transferências possíveis
         for (const [nome, transferencia] of transferencias) {
             const novoEstado = transferencia();
-            if (dfs(novoEstado, [...caminho, nome])) {
-                return true;
+            if (dfs(novoEstado, [...caminho, nome], estadoString)) {
+                return true; // Encerra a busca se o objetivo for alcançado
             }
         }
 
-        return false;
+        return false; // Continua a busca
     }
 
     // Iniciar busca a partir do estado inicial
-    if (!dfs(estadoInicial, [])) {
+    if (!dfs(estadoInicial, [], null)) {
         console.log("Falha em alcançar o objetivo.");
-        return tree;
-    } else {
-        console.log("Falha em alcançar o objetivo.");
-        return null;
     }
-}
 
-// Teste da Busca Irrevogável
-console.log("\n=== Testando Busca Irrevogável ===");
-buscaIrrevogavel();
+    return arvore; // Retorna a árvore gerada
+}

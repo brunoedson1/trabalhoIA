@@ -1,23 +1,23 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
 
-// Função para transferir água de um recipiente para outro
+// Função de transferência
 function transferir(origem, destino, capacidadeDestino) {
     const transferirQuantidade = Math.min(origem, capacidadeDestino - destino);
     return [origem - transferirQuantidade, destino + transferirQuantidade];
 }
 
-// Busca em profundidade (DFS)
+// Busca em Profundidade (DFS)
 export function buscaProfundidade() {
     // Pilha para armazenar os estados a serem explorados
-    const pilha = [[estadoInicial, []]];
-
+    const pilha = [[estadoInicial, [], null]]; // [estadoAtual, caminhoAtual, pai]
     // Conjunto para rastrear estados visitados
     const visitados = new Set();
+    const arvore = [];
 
     // Enquanto houver estados na pilha
     while (pilha.length > 0) {
         // Retirar o último estado da pilha (LIFO)
-        const [estadoAtual, caminhoAtual] = pilha.pop();
+        const [estadoAtual, caminhoAtual, pai] = pilha.pop();
         const estadoString = estadoAtual.join(',');
 
         // Verificar se o estado já foi visitado
@@ -28,16 +28,12 @@ export function buscaProfundidade() {
         // Marcar o estado como visitado
         visitados.add(estadoString);
 
+        // Adicionar o nó à árvore
+        arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
+
         // Verificar se o objetivo foi alcançado
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            console.log("\n=== Resultado ===");
-            console.log("Objetivo alcançado!");
-            console.log("Caminho seguido (passo a passo):\n");
-            caminhoAtual.forEach((passo, index) => {
-                console.log(`${index + 1}. ${passo}`);
-            });
-            console.log("\nEstado final alcançado: ", estadoAtual);
-            return;
+            return arvore; // Retorna a árvore gerada
         }
 
         // Possíveis transferências
@@ -72,17 +68,12 @@ export function buscaProfundidade() {
         for (const [nome, transferencia] of transferencias) {
             const novoEstado = transferencia();
             const novoEstadoString = novoEstado.join(',');
+
             if (!visitados.has(novoEstadoString)) {
-                pilha.push([novoEstado, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`]]);
+                pilha.push([novoEstado, [...caminhoAtual, nome], estadoString]); // Inclui o estado atual como pai
             }
         }
     }
 
-    // Se a pilha acabar e o objetivo não for alcançado
-    console.log("\n=== Resultado ===");
-    console.log("Falha em alcançar o objetivo.");
+    return arvore; // Retorna a árvore gerada, mesmo que o objetivo não seja alcançado
 }
-
-// Teste da Busca em Profundidade
-console.log("\n=== Testando Busca em Profundidade ===");
-buscaProfundidade();

@@ -1,7 +1,7 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
-
 import { PriorityQueue } from '@datastructures-js/priority-queue';
 
+// Função de transferência
 function transferir(origem, destino, capacidadeDestino) {
     const transferirQuantidade = Math.min(origem, capacidadeDestino - destino);
     return [origem - transferirQuantidade, destino + transferirQuantidade];
@@ -9,32 +9,37 @@ function transferir(origem, destino, capacidadeDestino) {
 
 // Busca Ordenada (Uniforme)
 export function buscaOrdenada() {
+    // Fila de prioridade para armazenar os estados a serem explorados
     const filaPrioridade = new PriorityQueue((a, b) => b[2] - a[2]); // Menor custo primeiro
     const visitados = new Set();
+    const arvore = [];
 
-    filaPrioridade.enqueue([estadoInicial, [], 0]);
+    // Inicializa a fila com o estado inicial
+    filaPrioridade.enqueue([estadoInicial, [], null, 0]); // [estadoAtual, caminhoAtual, pai, custoAtual]
 
+    // Enquanto houver estados na fila
     while (!filaPrioridade.isEmpty()) {
-        const [estadoAtual, caminhoAtual, custoAtual] = filaPrioridade.dequeue();
+        // Retirar o estado com menor custo da fila
+        const [estadoAtual, caminhoAtual, pai, custoAtual] = filaPrioridade.dequeue();
         const estadoString = estadoAtual.join(',');
 
+        // Verificar se o estado já foi visitado
         if (visitados.has(estadoString)) {
             continue;
         }
 
+        // Marcar o estado como visitado
         visitados.add(estadoString);
 
+        // Adicionar o nó à árvore
+        arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
+
+        // Verificar se o objetivo foi alcançado
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            console.log("\n=== Resultado ===");
-            console.log("Objetivo alcançado!");
-            console.log("Caminho seguido (passo a passo):\n");
-            caminhoAtual.forEach((passo, index) => {
-                console.log(`${index + 1}. ${passo}`);
-            });
-            console.log("\nEstado final alcançado: ", estadoAtual);
-            return;
+            return arvore; // Retorna a árvore gerada
         }
 
+        // Possíveis transferências
         const transferencias = [
             ["A -> B", () => {
                 const [novoA, novoB] = transferir(estadoAtual[0], estadoAtual[1], CAPACIDADE_B);
@@ -62,21 +67,17 @@ export function buscaOrdenada() {
             }]
         ];
 
+        // Adicionar os novos estados gerados na fila
         for (const [nome, transferencia] of transferencias) {
             const novoEstado = transferencia();
             const novoEstadoString = novoEstado.join(',');
             const novoCusto = custoAtual + 1; // Custo uniforme
 
             if (!visitados.has(novoEstadoString)) {
-                filaPrioridade.enqueue([novoEstado, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`], novoCusto]);
+                filaPrioridade.enqueue([novoEstado, [...caminhoAtual, nome], estadoString, novoCusto]);
             }
         }
     }
 
-    console.log("\n=== Resultado ===");
-    console.log("Falha em alcançar o objetivo.");
+    return arvore; // Retorna a árvore gerada, mesmo que o objetivo não seja alcançado
 }
-
-// Teste da Busca Ordenada
-console.log("\n=== Testando Busca Ordenada ===");
-buscaOrdenada();

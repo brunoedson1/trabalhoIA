@@ -1,23 +1,23 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
 
-// Função para transferir água de um recipiente para outro
+// Função de transferência
 function transferir(origem, destino, capacidadeDestino) {
     const transferirQuantidade = Math.min(origem, capacidadeDestino - destino);
     return [origem - transferirQuantidade, destino + transferirQuantidade];
 }
 
-// Busca em largura (BFS)
+// Busca em Largura (BFS)
 export function buscaLargura() {
     // Fila para armazenar os estados a serem explorados
-    const fila = [[estadoInicial, []]];
-
+    const fila = [[estadoInicial, [], null]]; // [estadoAtual, caminhoAtual, pai]
+    const arvore = [];
     // Conjunto para rastrear estados visitados
     const visitados = new Set();
 
     // Enquanto houver estados na fila
     while (fila.length > 0) {
         // Retirar o primeiro estado da fila
-        const [estadoAtual, caminhoAtual] = fila.shift();
+        const [estadoAtual, caminhoAtual, pai] = fila.shift();
         const estadoString = estadoAtual.join(',');
 
         // Verificar se o estado já foi visitado
@@ -28,16 +28,12 @@ export function buscaLargura() {
         // Marcar o estado como visitado
         visitados.add(estadoString);
 
+        // Adicionar o nó à árvore
+        arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
+
         // Verificar se o objetivo foi alcançado
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            console.log("\n=== Resultado ===");
-            console.log("Objetivo alcançado!");
-            console.log("Caminho seguido (passo a passo):\n");
-            caminhoAtual.forEach((passo, index) => {
-                console.log(`${index + 1}. ${passo}`);
-            });
-            console.log("\nEstado final alcançado: ", estadoAtual);
-            return;
+            return arvore; // Retorna a árvore gerada
         }
 
         // Possíveis transferências
@@ -73,16 +69,10 @@ export function buscaLargura() {
             const novoEstado = transferencia();
             const novoEstadoString = novoEstado.join(',');
             if (!visitados.has(novoEstadoString)) {
-                fila.push([novoEstado, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`]]);
+                fila.push([novoEstado, [...caminhoAtual, nome], estadoString]); // Inclui o estado atual como pai
             }
         }
     }
 
-    // Se a fila acabar e o objetivo não for alcançado
-    console.log("\n=== Resultado ===");
-    console.log("Falha em alcançar o objetivo.");
+    return arvore; // Retorna a árvore gerada, mesmo que o objetivo não seja alcançado
 }
-
-// Teste da Busca em Largura
-console.log("\n=== Testando Busca em Largura ===");
-buscaLargura();

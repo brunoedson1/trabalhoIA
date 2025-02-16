@@ -1,42 +1,35 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
-import { PriorityQueue } from '@datastructures-js/priority-queue';
+import { PriorityQueue } from 'https://cdn.skypack.dev/@datastructures-js/priority-queue';
 
 function transferir(origem, destino, capacidadeDestino) {
     const transferirQuantidade = Math.min(origem, capacidadeDestino - destino);
     return [origem - transferirQuantidade, destino + transferirQuantidade];
 }
 
-// Heurística: Soma das diferenças entre o estado atual e o objetivo
 function heuristica(estado) {
-    return Math.abs(estado[0] - objetivo[0]) + Math.abs(estado[1] - objetivo[1]) + Math.abs(estado[2] - objetivo[2]);
+    return Math.abs(estado[0] - objetivo[0]) +
+           Math.abs(estado[1] - objetivo[1]) +
+           Math.abs(estado[2] - objetivo[2]);
 }
 
-// Busca Gulosa
 export function buscaGulosa() {
-    const filaPrioridade = new PriorityQueue((a, b) => b[1] - a[1]); // Menor heurística primeiro
+    const filaPrioridade = new PriorityQueue((a, b) => b[1] - a[1]);
     const visitados = new Set();
+    const arvore = [];
 
-    filaPrioridade.enqueue([estadoInicial, heuristica(estadoInicial), []]);
+    filaPrioridade.enqueue([estadoInicial, heuristica(estadoInicial), [], null]);
 
     while (!filaPrioridade.isEmpty()) {
-        const [estadoAtual, _, caminhoAtual] = filaPrioridade.dequeue();
+        const [estadoAtual, _, caminhoAtual, pai] = filaPrioridade.dequeue();
         const estadoString = estadoAtual.join(',');
 
-        if (visitados.has(estadoString)) {
-            continue;
-        }
-
+        if (visitados.has(estadoString)) continue;
         visitados.add(estadoString);
 
+        arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
+
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            console.log("\n=== Resultado ===");
-            console.log("Objetivo alcançado!");
-            console.log("Caminho seguido (passo a passo):\n");
-            caminhoAtual.forEach((passo, index) => {
-                console.log(`${index + 1}. ${passo}`);
-            });
-            console.log("\nEstado final alcançado: ", estadoAtual);
-            return;
+            return arvore;
         }
 
         const transferencias = [
@@ -72,16 +65,10 @@ export function buscaGulosa() {
             const heuristicaValor = heuristica(novoEstado);
 
             if (!visitados.has(novoEstadoString)) {
-                filaPrioridade.enqueue([novoEstado, heuristicaValor, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`]]);
+                filaPrioridade.enqueue([novoEstado, heuristicaValor, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`], estadoString]);
             }
         }
     }
 
-    console.log("\n=== Resultado ===");
-    console.log("Falha em alcançar o objetivo.");
+    return arvore;
 }
-
-// Teste da Busca Gulosa
-console.log("\n=== Testando Busca Gulosa ===");
-buscaGulosa();
-
