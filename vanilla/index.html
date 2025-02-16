@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Algoritmos de Busca</title>
+    <link rel="stylesheet" href="./src/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualização de Algoritmos de Busca</h1>
+        <label for="algoritmo">Escolha o algoritmo:</label>
+        <select id="algoritmo" aria-label="Selecione o algoritmo de busca">
+            <option value="buscaAEstrela">Busca A Estrela</option>
+            <option value="buscaBacktracking">Busca Backtracking</option>
+            <option value="buscaGulosa">Busca Gulosa</option>
+            <option value="buscaIrrevogavel">Busca Irrevogável</option>
+            <option value="buscaLargura">Busca em Largura</option>
+            <option value="buscaOrdenada">Busca Ordenada</option>
+            <option value="buscaProfundidade">Busca Profundidade</option>
+        </select>
+        <button id="executar-busca" aria-label="Executar a busca selecionada">Executar Busca</button>
+
+        <div id="arvore" aria-label="Árvore gerada pela busca"></div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
