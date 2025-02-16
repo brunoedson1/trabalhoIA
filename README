@@ -1,0 +1,9 @@
+npm install -g vite
+
+npm init vite@latest --template vanilla
+
+cd vanilla/
+
+npm install
+
+npm run dev
