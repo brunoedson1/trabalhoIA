@@ -1,5 +1,23 @@
 {
   "dependencies": {
-    "priorityqueuejs": "^2.0.0"
-  }
+    "@datastructures-js/priority-queue": "^6.3.2",
+    "express": "^4.21.2",
+    "js-priority-queue": "^0.1.5",
+    "node": "^23.8.0",
+    "priorityqueuejs": "^2.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "name": "trabalhoia",
+  "version": "1.0.0",
+  "main": "config.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
