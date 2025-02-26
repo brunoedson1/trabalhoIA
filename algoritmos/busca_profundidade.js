@@ -8,35 +8,28 @@ function transferir(origem, destino, capacidadeDestino) {
 
 // Busca em Profundidade (DFS)
 export function buscaProfundidade() {
-    // Pilha para armazenar os estados a serem explorados
     const pilha = [[estadoInicial, [], null]]; // [estadoAtual, caminhoAtual, pai]
-    // Conjunto para rastrear estados visitados
     const visitados = new Set();
     const arvore = [];
+    const abertosLog = [];
+    const fechadosLog = [];
 
-    // Enquanto houver estados na pilha
     while (pilha.length > 0) {
-        // Retirar o último estado da pilha (LIFO)
         const [estadoAtual, caminhoAtual, pai] = pilha.pop();
         const estadoString = estadoAtual.join(',');
 
-        // Verificar se o estado já foi visitado
-        if (visitados.has(estadoString)) {
-            continue;
-        }
-
-        // Marcar o estado como visitado
+        if (visitados.has(estadoString)) continue;
         visitados.add(estadoString);
 
-        // Adicionar o nó à árvore
+        // Logs
+        fechadosLog.push(estadoAtual);
+
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
-        // Verificar se o objetivo foi alcançado
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            return arvore; // Retorna a árvore gerada
+            return { arvore, abertosLog, fechadosLog };
         }
 
-        // Possíveis transferências
         const transferencias = [
             ["A -> B", () => {
                 const [novoA, novoB] = transferir(estadoAtual[0], estadoAtual[1], CAPACIDADE_B);
@@ -64,16 +57,16 @@ export function buscaProfundidade() {
             }]
         ];
 
-        // Adicionar os novos estados gerados na pilha
         for (const [nome, transferencia] of transferencias) {
             const novoEstado = transferencia();
             const novoEstadoString = novoEstado.join(',');
 
             if (!visitados.has(novoEstadoString)) {
-                pilha.push([novoEstado, [...caminhoAtual, nome], estadoString]); // Inclui o estado atual como pai
+                pilha.push([novoEstado, [...caminhoAtual, nome], estadoString]);
+                abertosLog.push(novoEstado);
             }
         }
     }
 
-    return arvore; // Retorna a árvore gerada, mesmo que o objetivo não seja alcançado
+    return { arvore, abertosLog, fechadosLog };
 }

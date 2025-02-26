@@ -103,3 +103,68 @@ document.getElementById('executar-busca').addEventListener('click', () => {
 
     renderizarArvore(arvore);
 });
+
+document.getElementById('executar-busca').addEventListener('click', async () => {
+    const algoritmoSelecionado = document.getElementById('algoritmo').value;
+    const mensagem = document.getElementById('mensagem');
+    const tempoExecucao = document.getElementById('tempo-execucao');
+    const caminhoEncontrado = document.getElementById('caminho-encontrado');
+    const abertosLogElement = document.getElementById('abertos-log');
+    const fechadosLogElement = document.getElementById('fechados-log');
+
+    // Limpar resultados anteriores
+    mensagem.textContent = '';
+    tempoExecucao.textContent = '';
+    caminhoEncontrado.textContent = '';
+    abertosLogElement.textContent = '';
+    fechadosLogElement.textContent = '';
+
+    try {
+        const inicio = performance.now();
+        let resultado;
+
+        switch (algoritmoSelecionado) {
+            case 'buscaAEstrela':
+                resultado = await buscaAEstrela();
+                break;
+            case 'buscaBacktracking':
+                resultado = await buscaBacktracking();
+                break;
+            case 'buscaGulosa':
+                resultado = await buscaGulosa();
+                break;
+            case 'buscaIrrevogavel':
+                resultado = await buscaIrrevogavel();
+                break;
+            case 'buscaLargura':
+                resultado = await buscaLargura();
+                break;
+            case 'buscaOrdenada':
+                resultado = await buscaOrdenada();
+                break;
+            case 'buscaProfundidade':
+                resultado = await buscaProfundidade();
+                break;
+            default:
+                throw new Error('Algoritmo não implementado.');
+        }
+
+        const fim = performance.now();
+        const tempoDecorrido = fim - inicio;
+
+        // Exibir resultados
+        if (resultado.arvore.length > 0 ) {
+            tempoExecucao.textContent = `Tempo de execução: ${tempoDecorrido.toFixed(2)} ms`;
+            caminhoEncontrado.textContent = `Caminho: ${resultado.arvore.map(n => `[${n.estado.join(', ')}]`).join(' -> ')}`;
+            abertosLogElement.textContent = `Abertos: ${resultado.abertosLog.map(estado => `[${estado.join(', ')}]`).join(', ')}`;
+            fechadosLogElement.textContent = `Fechados: ${resultado.fechadosLog.map(estado => `[${estado.join(', ')}]`).join(', ')}`;
+        } else {
+            mensagem.textContent = 'Falha ao encontrar solução.';
+        }
+
+        // Renderizar a árvore
+        renderizarArvore(resultado.arvore);
+    } catch (error) {
+        mensagem.textContent = `Erro: ${error.message}`;
+    }
+});

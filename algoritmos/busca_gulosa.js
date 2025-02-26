@@ -16,6 +16,8 @@ export function buscaGulosa() {
     const filaPrioridade = new PriorityQueue((a, b) => b[1] - a[1]);
     const visitados = new Set();
     const arvore = [];
+    const abertosLog = [];
+    const fechadosLog = [];
 
     filaPrioridade.enqueue([estadoInicial, heuristica(estadoInicial), [], null]);
 
@@ -26,10 +28,13 @@ export function buscaGulosa() {
         if (visitados.has(estadoString)) continue;
         visitados.add(estadoString);
 
+        // Logs
+        fechadosLog.push(estadoAtual);
+
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            return arvore;
+            return { arvore, abertosLog, fechadosLog };
         }
 
         const transferencias = [
@@ -66,9 +71,10 @@ export function buscaGulosa() {
 
             if (!visitados.has(novoEstadoString)) {
                 filaPrioridade.enqueue([novoEstado, heuristicaValor, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`], estadoString]);
+                abertosLog.push(novoEstado);
             }
         }
     }
 
-    return arvore;
+    return { arvore, abertosLog, fechadosLog };
 }

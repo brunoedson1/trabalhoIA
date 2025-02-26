@@ -6,29 +6,33 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: white;
+  background-color: #f9f9f9;
 }
 
 .container {
-  position: absolute;
+  position: relative;
   text-align: center;
   width: 100%; 
   height: 100%; 
-  overflow: auto
+  overflow: auto;
+  margin: 20px auto;
 }
 
 h1 {
-  color: #333;
+  color: #007bff; /* Azul para destacar o título */
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease; /* Transição suave */
 }
 
 button:hover {
@@ -56,4 +60,25 @@ button:hover {
   fill: none;
   stroke: #ccc;
   stroke-width: 1.5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  body {
+    align-items: center; /* Centraliza na vertical em telas menores */
+  }
+
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  button {
+    width: 100%; /* Botão ocupa toda a largura em telas pequenas */
+    margin-bottom: 10px;
+  }
+
+  #arvore {
+    height: 400px; /* Reduz a altura da árvore em telas pequenas */
+  }
 }

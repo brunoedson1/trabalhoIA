@@ -19,32 +19,29 @@ export function buscaAEstrela() {
     const filaPrioridade = new PriorityQueue((a, b) => b[0] - a[0]); // Menor custo total primeiro
     const visitados = new Set();
     const arvore = [];
+    const abertosLog = [];
+    const fechadosLog = [];
 
-    // Inicializa a fila com o estado inicial
-    filaPrioridade.enqueue([heuristica(estadoInicial), estadoInicial, [], null, 0]); 
-    // [custoTotal, estadoAtual, caminhoAtual, pai, custoReal]
+    filaPrioridade.enqueue([heuristica(estadoInicial), estadoInicial, [], null, 0]);
 
     while (!filaPrioridade.isEmpty()) {
         const [_, estadoAtual, caminhoAtual, pai, custoRealAtual] = filaPrioridade.dequeue();
         const estadoString = estadoAtual.join(',');
 
-        // Verifica se o estado já foi visitado
-        if (visitados.has(estadoString)) {
+        if (visitados.has(estadoString)){
             continue;
         }
-
-        // Marca o estado como visitado
         visitados.add(estadoString);
 
-        // Adiciona o nó à árvore
+        // Logs
+        fechadosLog.push(estadoAtual);
+
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
-        // Verifica se o objetivo foi alcançado
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            return arvore; // Retorna a árvore gerada
+            return { arvore, abertosLog, fechadosLog };
         }
 
-        // Possíveis transferências
         const transferencias = [
             ["A -> B", () => {
                 const [novoA, novoB] = transferir(estadoAtual[0], estadoAtual[1], CAPACIDADE_B);
@@ -72,7 +69,6 @@ export function buscaAEstrela() {
             }]
         ];
 
-        // Explora todas as transferências possíveis
         for (const [nome, transferencia] of transferencias) {
             const novoEstado = transferencia();
             const novoEstadoString = novoEstado.join(',');
@@ -80,16 +76,11 @@ export function buscaAEstrela() {
             const novoCustoTotal = novoCustoReal + heuristica(novoEstado);
 
             if (!visitados.has(novoEstadoString)) {
-                filaPrioridade.enqueue([
-                    novoCustoTotal,
-                    novoEstado,
-                    [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`],
-                    estadoString, // O estado atual é o pai do novo estado
-                    novoCustoReal
-                ]);
+                filaPrioridade.enqueue([novoCustoTotal, novoEstado, [...caminhoAtual, nome], estadoString, novoCustoReal]);
+                abertosLog.push(novoEstado); // Agora só adiciona os estados que entraram na fila
             }
         }
     }
 
-    return arvore; // Retorna a árvore gerada, mesmo que o objetivo não seja alcançado
+    return { arvore, abertosLog, fechadosLog };
 }
