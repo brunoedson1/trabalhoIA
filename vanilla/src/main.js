@@ -153,7 +153,7 @@ document.getElementById('executar-busca').addEventListener('click', async () => 
         const tempoDecorrido = fim - inicio;
 
         // Exibir resultados
-        if (resultado.arvore.length > 0) {
+        if (resultado.arvore.length > 0 ) {
             tempoExecucao.textContent = `Tempo de execução: ${tempoDecorrido.toFixed(2)} ms`;
             caminhoEncontrado.textContent = `Caminho: ${resultado.arvore.map(n => `[${n.estado.join(', ')}]`).join(' -> ')}`;
             abertosLogElement.textContent = `Abertos: ${resultado.abertosLog.map(estado => `[${estado.join(', ')}]`).join(', ')}`;

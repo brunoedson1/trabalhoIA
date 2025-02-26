@@ -30,7 +30,6 @@ export function buscaGulosa() {
 
         // Logs
         fechadosLog.push(estadoAtual);
-        abertosLog.push(...filaPrioridade.toArray().map(([estado]) => estado));
 
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
@@ -72,6 +71,7 @@ export function buscaGulosa() {
 
             if (!visitados.has(novoEstadoString)) {
                 filaPrioridade.enqueue([novoEstado, heuristicaValor, [...caminhoAtual, `${nome}: ${estadoAtual.join(' -> ')} -> ${novoEstado.join(',')}`], estadoString]);
+                abertosLog.push(novoEstado);
             }
         }
     }

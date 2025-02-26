@@ -28,12 +28,13 @@ export function buscaAEstrela() {
         const [_, estadoAtual, caminhoAtual, pai, custoRealAtual] = filaPrioridade.dequeue();
         const estadoString = estadoAtual.join(',');
 
-        if (visitados.has(estadoString)) continue;
+        if (visitados.has(estadoString)){
+            continue;
+        }
         visitados.add(estadoString);
 
         // Logs
         fechadosLog.push(estadoAtual);
-        abertosLog.push(...filaPrioridade.toArray().map(([_, estado]) => estado));
 
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
@@ -76,6 +77,7 @@ export function buscaAEstrela() {
 
             if (!visitados.has(novoEstadoString)) {
                 filaPrioridade.enqueue([novoCustoTotal, novoEstado, [...caminhoAtual, nome], estadoString, novoCustoReal]);
+                abertosLog.push(novoEstado); // Agora só adiciona os estados que entraram na fila
             }
         }
     }

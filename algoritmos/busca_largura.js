@@ -22,8 +22,7 @@ export function buscaLargura() {
         visitados.add(estadoString);
 
         // Adicionar aos logs
-        fechadosLog.push(estadoAtual);
-        abertosLog.push(...fila.map(([estado]) => estado)); // Estados ainda na fila
+        fechadosLog.push(estadoAtual); // Estados ainda na fila
 
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
@@ -64,6 +63,7 @@ export function buscaLargura() {
 
             if (!visitados.has(novoEstadoString)) {
                 fila.push([novoEstado, [...caminhoAtual, nome], estadoString]);
+                abertosLog.push(novoEstado);
             }
         }
     }

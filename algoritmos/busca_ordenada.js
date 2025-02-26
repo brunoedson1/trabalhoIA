@@ -26,7 +26,6 @@ export function buscaOrdenada() {
 
         // Logs
         fechadosLog.push(estadoAtual);
-        abertosLog.push(...filaPrioridade.toArray().map(([estado]) => estado));
 
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
@@ -68,6 +67,7 @@ export function buscaOrdenada() {
 
             if (!visitados.has(novoEstadoString)) {
                 filaPrioridade.enqueue([novoEstado, [...caminhoAtual, nome], estadoString, novoCusto]);
+                abertosLog.push(novoEstado);
             }
         }
     }

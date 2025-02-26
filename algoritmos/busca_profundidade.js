@@ -23,7 +23,6 @@ export function buscaProfundidade() {
 
         // Logs
         fechadosLog.push(estadoAtual);
-        abertosLog.push(...pilha.map(([estado]) => estado));
 
         arvore.push({ estado: estadoAtual, pai, transicao: caminhoAtual[caminhoAtual.length - 1] });
 
@@ -64,6 +63,7 @@ export function buscaProfundidade() {
 
             if (!visitados.has(novoEstadoString)) {
                 pilha.push([novoEstado, [...caminhoAtual, nome], estadoString]);
+                abertosLog.push(novoEstado);
             }
         }
     }
