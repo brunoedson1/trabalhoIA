@@ -18,10 +18,12 @@ function heuristica(estado) {
 export function buscaAEstrela() {
     const filaPrioridade = new PriorityQueue((a, b) => b[0] - a[0]); // Menor custo primeiro
     const custosVisitados = new Map(); // Estado -> menor custo real
+    const visitados = new Set(); // Conjunto para rastrear estados visitados
     const arvore = [];
     const caminhos = [];
     const abertosLog = [];
     const fechadosLog = [];
+    let objetivoAlcancado = false;
 
     filaPrioridade.enqueue([heuristica(estadoInicial), estadoInicial, [], null, 0]);
     custosVisitados.set(estadoInicial.join(','), 0);
@@ -30,16 +32,23 @@ export function buscaAEstrela() {
         const [_, estadoAtual, caminhoAtual, pai, custoRealAtual] = filaPrioridade.dequeue();
         const estadoString = estadoAtual.join(',');
 
+        if (visitados.has(estadoString)) continue;
+        visitados.add(estadoString);
+
         fechadosLog.push(estadoAtual);
 
         arvore.push({
             estado: estadoAtual,
             pai,
-            transicao: caminhoAtual.length > 0 ? caminhoAtual[caminhoAtual.length - 1] : null, custo: custoRealAtual
+            transicao: caminhoAtual.length > 0 ? caminhoAtual[caminhoAtual.length - 1] : null,
+            custo: custoRealAtual
         });
 
         if (estadoAtual[0] === objetivo[0] && estadoAtual[1] === objetivo[1] && estadoAtual[2] === objetivo[2]) {
-            caminhos.push({ caminho: [...caminhoAtual], custo: custoRealAtual }); // Armazenar o caminho encontrado
+            if (!objetivoAlcancado) {
+                caminhos.push({ caminho: [...caminhoAtual], custo: custoRealAtual }); // Armazenar o caminho encontrado
+                objetivoAlcancado = true;
+            }
             continue; // Continuar a busca para encontrar mais caminhos
         }
 
