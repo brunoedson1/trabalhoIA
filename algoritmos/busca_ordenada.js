@@ -1,5 +1,5 @@
 import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo } from '../config.js';
-import { PriorityQueue } from '@datastructures-js/priority-queue';
+import { PriorityQueue } from 'https://cdn.skypack.dev/@datastructures-js/priority-queue';
 
 // Função de transferência
 function transferir(origem, destino, capacidadeDestino) {
