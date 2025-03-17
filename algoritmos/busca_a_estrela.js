@@ -81,6 +81,5 @@ export function buscaAEstrela() {
             }
         }
     }
-
-    return { arvore, abertosLog, fechadosLog };
+    return { arvore, caminhos, abertosLog, fechadosLog };
 }
