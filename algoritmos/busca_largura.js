@@ -1,4 +1,4 @@
-import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo, PESO_A, PESO_B, PESO_C } from '../config.js';
+import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, PESO_A, PESO_B, PESO_C, estadoInicial, objetivo} from '../config.js';
 
 // Função de transferência
 function transferir(origem, destino, capacidadeDestino) {

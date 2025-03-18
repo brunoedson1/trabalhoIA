@@ -1,4 +1,4 @@
-import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, estadoInicial, objetivo, PESO_A, PESO_B, PESO_C } from '../config.js';
+import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, PESO_A, PESO_B, PESO_C, estadoInicial, objetivo} from '../config.js';
 import { PriorityQueue } from 'https://cdn.skypack.dev/@datastructures-js/priority-queue';
 
 function transferir(origem, destino, capacidadeDestino) {
