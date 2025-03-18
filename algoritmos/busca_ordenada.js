@@ -1,4 +1,4 @@
-import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, PESO_A, PESO_B, PESO_C, estadoInicial, objetivo} from '../config.js';
+import { CAPACIDADE_A, CAPACIDADE_B, CAPACIDADE_C, PESO_A, PESO_B, PESO_C, estadoInicial, objetivo } from '../config.js';
 import { PriorityQueue } from 'https://cdn.skypack.dev/@datastructures-js/priority-queue';
 
 // Função de transferência
@@ -11,12 +11,14 @@ function transferir(origem, destino, capacidadeDestino) {
 export function buscaOrdenada() {
     const filaPrioridade = new PriorityQueue((a, b) => b[3] - a[3]); // Menor custo primeiro
     const visitados = new Set();
+    const custosVisitados = new Map(); // Estado -> menor custo real
     const arvore = [];
     const caminhos = [];
     const abertosLog = [];
     const fechadosLog = [];
 
     filaPrioridade.enqueue([estadoInicial, [], null, 0]); // [estadoAtual, caminhoAtual, pai, custoAtual]
+    custosVisitados.set(estadoInicial.join(','), 0);
 
     while (!filaPrioridade.isEmpty()) {
         const [estadoAtual, caminhoAtual, pai, custoAtual] = filaPrioridade.dequeue();
@@ -67,7 +69,8 @@ export function buscaOrdenada() {
             const novoEstadoString = novoEstado.join(',');
             const novoCusto = custoAtual + peso;
 
-            if (!visitados.has(novoEstadoString)) {
+            if (!custosVisitados.has(novoEstadoString) || novoCusto < custosVisitados.get(novoEstadoString)) {
+                custosVisitados.set(novoEstadoString, novoCusto);
                 filaPrioridade.enqueue([novoEstado, [...caminhoAtual, nome], estadoString, novoCusto]);
                 abertosLog.push(novoEstado);
             }
